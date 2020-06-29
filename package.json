@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "description": "Axios wrapper arouund a swagger json",
   "license": "MIT",
-  "repository": "co-demos/swag-wrap",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/co-demos/swag-wrap.git"
+  },
   "main": "index.js",
   "keywords": [
     "json",
@@ -17,5 +20,13 @@
   },
   "devDependencies": {
     "standard": "^14.3.4"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/co-demos/swag-wrap/issues"
+  },
+  "homepage": "https://github.com/co-demos/swag-wrap#readme",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "julpy"
 }
