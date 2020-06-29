@@ -7,10 +7,23 @@ Simple swagger.json wrapper with Axios
 
 ## Install
 
-```
-$ npm install @julpy/swag-wrap
+```terminal
+npm install @julpy/swag-wrap
 ```
 
 ## Usage
 
-to do
+```js
+import APILib from '@julpy/swag-wrap'
+
+const options = {
+  protocol: 'https', // optional - default: 'https'
+  swaggerUrl: 'https://www.data.gouv.fr/api/1/swagger.json', // mandatory
+  apiDomain: 'https://www.data.gouv.fr', // mandatory
+  apiVersion: '', // optional - default: '' - example : '/api/1'
+}
+const MyAPI = new APILib( options )
+
+let response = MyAPI.getDatasets()
+
+```

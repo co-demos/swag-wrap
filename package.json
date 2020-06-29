@@ -1,7 +1,8 @@
 {
   "name": "@julpy/swag-wrap",
-  "version": "0.0.1",
-  "description": "Axios wrapper arouund a swagger json",
+  "version": "0.0.1-beta.4",
+  "author": "julpy",
+  "description": "Axios wrapper around a swagger json",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -13,7 +14,8 @@
     "npm",
     "package",
     "swagger",
-    "axios"
+    "axios",
+    "openAPI"
   ],
   "dependencies": {
     "axios": "^0.19.2"
@@ -26,7 +28,11 @@
   },
   "homepage": "https://github.com/co-demos/swag-wrap#readme",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "julpy"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npx standard",
+    "lint-fix": "npx standard --fix",
+    "publish-beta": "npm publish --tag beta",
+    "publish": "npm publish",
+    "publish-login": "npm login"
+  }
 }
