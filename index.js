@@ -15,7 +15,7 @@ class APILib {
     this.options = options
     const protocol = this.options.protocol || 'https'
     this.swaggerURL = `${protocol}://${this.options.swaggerUrl}`
-    this.apiVersion = this.options.apiVersion ? this.options.apiVersion : '' // `/api/1`
+    this.apiVersion = this.options.apiVersion ? this.options.apiVersion : ''
     this.apiServerURL = `${protocol}://${this.options.apiDomain}${this.apiVersion}`
 
     this.swaggerObject = undefined
@@ -29,16 +29,20 @@ class APILib {
     })
     Promise.all([getJson])
     .then( res => {
-      console.log('>>> APILib > Promise > this.swaggerObject :', this.swaggerObject)
+      console.log('>>> APILib > Promise.all.then > this.swaggerObject :', this.swaggerObject)
       return
     })
   }
 
   _get (path, params) {
     params = params || {}
-    return axios.get(`${this.apiServerURL}/${path}`, { params: params })
+    console.log('>>> APILib > _get > this.apiServerURL :', this.apiServerURL)
+    console.log('>>> APILib > _get > path :', path)
+    return axios.get(`${this.apiServerURL}${path}`, { params: params })
       .then(res => {
-        return res.body
+        console.log('>>> APILib > _get > res :', res)
+        return res.data
+        // return res.body
       })
       .catch(function (error) {
       // handle error
@@ -47,7 +51,7 @@ class APILib {
   }
 
   _put (path, data) {
-    return axios.put(`${this.apiServerURL}/${path}`, data)
+    return axios.put(`${this.apiServerURL}${path}`, data)
       .then(res => {
         return res.body
       })
@@ -66,11 +70,12 @@ class APILib {
   }
 
   getDatasets () {
-    return this._get('datasets/')
+    console.log('>>> APILib > getDatasets > ... ')
+    return this._get('/datasets/')
   }
 
   getDataset (id) {
-    return this._get(`datasets/${id}/`)
+    return this._get(`/datasets/${id}/`)
   }
 }
 
