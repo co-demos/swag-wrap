@@ -1,6 +1,6 @@
 {
   "name": "@julpy/swag-wrap",
-  "version": "0.0.1-beta.4",
+  "version": "0.0.1-beta.10",
   "author": "julpy",
   "description": "Axios wrapper around a swagger json",
   "license": "MIT",
@@ -30,9 +30,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "npx standard",
-    "lint-fix": "npx standard --fix",
-    "publish-beta": "npm publish --tag beta",
-    "publish": "npm publish",
-    "publish-login": "npm login"
+    "lint-fix": "npx standard --fix"
   }
 }
