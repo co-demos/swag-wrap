@@ -1,5 +1,5 @@
 {
-  "name": "@jpy/swag-wrap",
+  "name": "@julpy/swag-wrap",
   "version": "0.0.1",
   "description": "Axios wrapper arouund a swagger json",
   "license": "MIT",
