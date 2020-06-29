@@ -1,0 +1,18 @@
+{
+  "name": "@jpy/swag-wrap",
+  "version": "0.0.1",
+  "description": "Axios wrapper arouund a swagger json",
+  "license": "MIT",
+  "repository": "co-demos/swag-wrap",
+  "main": "index.js",
+  "keywords": [
+    "json",
+    "npm",
+    "package",
+    "swagger",
+    "axios"
+  ],
+  "dependencies": {
+    "axios": "^0.19.2"
+  }
+}
