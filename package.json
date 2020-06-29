@@ -14,5 +14,8 @@
   ],
   "dependencies": {
     "axios": "^0.19.2"
+  },
+  "devDependencies": {
+    "standard": "^14.3.4"
   }
 }
