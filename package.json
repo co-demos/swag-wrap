@@ -18,7 +18,9 @@
     "openAPI"
   ],
   "dependencies": {
-    "axios": "^0.19.2"
+    "axios": "^0.19.2",
+    "swagger-client": "^3.10.9",
+    "swagger-parser": "^9.0.1"
   },
   "devDependencies": {
     "standard": "^14.3.4"

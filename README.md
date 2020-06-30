@@ -13,17 +13,61 @@ npm install @julpy/swag-wrap
 
 ## Usage
 
+#### in your vue's `.env` file
+```bash
+VUE_APP_SWAGGER_URL=https://www.data.gouv.fr/api/1/swagger.json
+```
+
+#### in your vue's `main.js` file
 ```js
-import APILib from '@julpy/swag-wrap'
+import APIcli from '@julpy/swag-wrap'
 
 const options = {
-  protocol: 'https', // optional - default: 'https'
-  swaggerUrl: 'https://www.data.gouv.fr/api/1/swagger.json', // mandatory
-  apiDomain: 'https://www.data.gouv.fr', // mandatory
-  apiVersion: '', // optional - default: '' - example : '/api/1'
+  swaggerUrl: process.env.VUE_APP_SWAGGER_URL
 }
-const MyAPI = new APILib( options )
 
-let response = MyAPI.getDatasets()
+Vue.use(APIcli, options)
 
+...
+
+```
+
+#### in any of your vue components
+```vue
+<template>
+  <div>
+    <div v-if="datasets">
+      <b-table striped hover :items="datasets.data"></b-table>
+    </div>
+    <div v-else>
+      ... loading Datasets
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data () {
+    return {
+      datasets: undefined
+    }
+  },
+  created () {
+    // get your client instance
+    const API = this.$APIcli
+
+    // define your path relative to your swagger
+    const pathTags = ['datasets', 'list_datasets']
+
+    // request data from this path
+    API._request(pathTags).then(
+      results => {
+        // do something with the result
+        this.datasets = results.body
+      },
+      reason => console.error('failed on api call: ' + reason)
+    )
+  }
+}
+</script>
 ```
