@@ -38,10 +38,6 @@ class SwagCli {
       this.specAndAuth.authorization = { oAuth2: { token: { access_token: this.token } } }
     }
 
-    // append interceptor
-    // const requestInterceptor = this._requestInterceptor
-    // specAndAuth = { ...specAndAuth, requestInterceptor }
-
     // activate CORS or not
     if (options.activateCORS) {
       SwaggerClient.http.withCredentials = true
@@ -66,13 +62,16 @@ class SwagCli {
     )
   }
 
-  // _requestInterceptor (request) {
-  //   console.log('>>> SwagCli > _requestInterceptor > request :', request)
-  //   if (request.loadSpec) {
-  //     console.log('>>> SwagCli > _requestInterceptor > request.loadSpec :', request.loadSpec)
-  //   }
-  //   return request
-  // }
+  _requestInterceptor (req, needAuth) {
+    console.log('>>> SwagCli > _requestInterceptor > req :', req)
+    // if (req.loadSpec) {
+    //   console.log('>>> SwagCli > _requestInterceptor > req.loadSpec :', req.loadSpec)
+    // }
+    const authHeader = this.specAndAuth.authorization
+    req.headers = needAuth ? { ...req.headers, ...authHeader } : req.headers
+    console.log('>>> SwagCli > requestInterceptor >> req : ', req)
+    return req
+  }
 
   _request (operationId, { params, body, needAuth }) {
     // main request function
@@ -88,42 +87,25 @@ class SwagCli {
         console.log('>>> SwagCli > _request >> params : ', params)
         console.log('>>> SwagCli > _request >> body : ', body)
 
-        if (this.security && this.apiKey) {
-          console.log('>>> SwagCli > _request >> this.security : ', this.security)
-          console.log('>>> SwagCli > _request >> this.apiKey : ', this.apiKey)
-        }
+        // if (this.security && this.apiKey) {
+        //   console.log('>>> SwagCli > _request >> this.security : ', this.security)
+        //   console.log('>>> SwagCli > _request >> this.apiKey : ', this.apiKey)
+        // }
 
         // build endpoint
         // const endpoint = resolvePath(pathTagList, client.apis, this.tagsSeparator)
         // return endpoint(params)
 
-        // const _requestInterceptor = this._requestInterceptor
-        const authHeader = this.specAndAuth.authorization
         // const allowOriginHeader = { 'Access-Control-Allow-Origin': '*' }
         const request = {
           operationId: operationId,
           parameters: params,
           body: body,
-          // _requestInterceptor
-          requestInterceptor: req => {
-            req.headers = needAuth ? { ...req.headers, ...authHeader } : req.headers
-            console.log('>>> SwagCli > _request > requestInterceptor >> req : ', req)
-            return req
-          }
+          requestInterceptor: req => this._requestInterceptor(req, needAuth)
         }
         const endpoint = client.execute(request)
-        console.log('>>> SwagCli > _request >> endpoint : ', endpoint)
+        console.log('>>> SwagCli > _request >> endpoint (Promise): ', endpoint)
         return endpoint
-
-        // const request = SwaggerClient.buildRequest({
-        //   spec: this.swaggerUrl,
-        //   operationId: operationId,
-        //   parameters: params,
-        //   body: body,
-        //   securities: { ApiKey: { value: this.apiKey } },
-        //   responseContentType: 'application/json'
-        // })
-        // return SwaggerClient.http(request)
       },
       reason => console.error('>>> SwagCli > _request >> failed to load the spec: ' + reason)
     )

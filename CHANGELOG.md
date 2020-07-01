@@ -9,7 +9,7 @@ Simple swagger.json wrapper for Vue
 
 ## Current (in progress)
 
-- beta : 0.0.1-beta.16
+- beta : 0.0.1-beta.15
 
 ## beta version
 
