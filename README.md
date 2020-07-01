@@ -87,7 +87,9 @@ export default {
     // get your swag-wrap client instance
     const API = this.$APIcli
 
-    //// GET endpoint without parameters
+    // - - - - - - - - - - - - - - - - - //
+    // GET endpoint without parameters
+    // - - - - - - - - - - - - - - - - - //
     // request data from the desired path
     API._request(this.operationId_get_list).then(
       results => {
@@ -110,13 +112,15 @@ export default {
       reason => console.error('failed on api call: ' + reason)
     )
 
+    // - - - - - - - - - - - - - - - - - //
     //// GET endpoint with parameters
+    // - - - - - - - - - - - - - - - - - //
     // prepare parameters for this endpoint
-    const paramsOne = {
+    const parameters = {
       dataset: 'my-dataset-id',
     }
     // request data from the desired path
-    API._request(this.operationId_get_one, paramsOne).then(
+    API._request(this.operationId_get_one, { parameters } ).then(
       results => {
         // ... do something with the result
         this.datasets = results.body
@@ -124,16 +128,22 @@ export default {
       reason => console.error('failed on api call: ' + reason)
     )
 
+    // - - - - - - - - - - - - - - - - - //
     //// PUT endpoint with parameters
+    // - - - - - - - - - - - - - - - - - //
     // prepare parameters for this endpoint
-    const paramsOnePut = {
-      dataset: 'my-dataset-id',
+    const parameters = {
+      dataset: this.datasetId
       payload: {
-        title: 'my-new-title'
+        title: `updated-title-random`,
+        description: `an updated description ... `
       }
     }
+    const body = {
+      uGotAVery: '... nice body'
+    }
     // PUT/POST data from the desired path
-    API._request(this.operationId_put_one, paramsOnePut).then(
+      API._request(this.operationId_put_one, { parameters, body, needAuth: true }).then(
       results => {
         // ... do something with the result
         this.datasets = results.body

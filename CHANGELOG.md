@@ -9,10 +9,11 @@ Simple swagger.json wrapper for Vue
 
 ## Current (in progress)
 
-- beta : 0.0.1-beta.15
+- beta version : 0.0.1-beta.16
 
 ## beta version
 
+- **0.0.1-beta.16** : working  request interceptor
 - **0.0.1-beta.15** : adding security parameters in constructor  / first request interceptors
 - **0.0.1-beta.13** to **0.0.1-beta.14** : 
   - changes in the documentation (README, CHANGELOG, comments)
