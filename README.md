@@ -41,7 +41,6 @@ const swagWrapOptions = {
   // get back your swagger json url and other options here
   swaggerUrl: process.env.VUE_APP_SWAGGER_URL,
   apiKey: process.env.VUE_APP_API_KEY,
-  separator: '.'
 }
 
 // inject your API client plugin into your vue app
@@ -167,14 +166,16 @@ import { SwagCli } from '@julpy/swag-wrap'
 const swagWrapOptions = {
   swaggerUrl: 'https://www.data.gouv.fr/api/1/swagger.json',
   apiKey: 'my-precious-api-personal-key',
-  separator: '.'
 }
 const mySwaggerClient = new SwagCli(options)
 
 // use your client to request the api
 // simple `get` example
-const operationId = 'list_datasets'
-const myRequest = mySwaggerClient(endpointPath).then( results => {
+const operationId = 'get_dataset'
+const parameters = {
+  dataset: 'my-dataset-id',
+}
+const myRequest = mySwaggerClient(operationId, { parameters }).then( results => {
   console.log(results)
   // ... do something with the results
 })
