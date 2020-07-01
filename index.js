@@ -24,22 +24,23 @@ class SwagCli {
     this.tagsSeparator = options.separator ? options.separator : '.'
 
     // create swagger client from spec
-    let specAndAuth = { url: this.spec }
+    this.specAndAuth = { url: this.spec }
 
     // add auth to spec if necessary
     if (this.apiKey) {
-      specAndAuth.authorization = { ApiKey: { value: this.apiKey } }
+      // this.specAndAuth.authorization = { ApiKey: { value: this.apiKey } }
+      this.specAndAuth.authorization = { 'X-API-KEY': this.apiKey }
     } else if (this.bearerAuth) {
-      specAndAuth.authorization = { BearerAuth: { value: this.bearerAuth } }
+      this.specAndAuth.authorization = { BearerAuth: { value: this.bearerAuth } }
     } else if (this.userPassword) {
-      specAndAuth.authorization = { BasicAuth: { username: this.userName, password: this.userPassword } }
+      this.specAndAuth.authorization = { BasicAuth: { username: this.userName, password: this.userPassword } }
     } else if (this.token) {
-      specAndAuth.authorization = { oAuth2: { token: { access_token: this.token } } }
+      this.specAndAuth.authorization = { oAuth2: { token: { access_token: this.token } } }
     }
 
     // append interceptor
-    const requestInterceptor = this._requestInterceptor
-    specAndAuth = { ...specAndAuth, requestInterceptor }
+    // const requestInterceptor = this._requestInterceptor
+    // specAndAuth = { ...specAndAuth, requestInterceptor }
 
     // activate CORS or not
     if (options.activateCORS) {
@@ -47,7 +48,7 @@ class SwagCli {
     }
 
     // instantiate client
-    this.cli = new SwaggerClient(specAndAuth)
+    this.cli = new SwaggerClient(this.specAndAuth)
 
     // set up security definitions
     this.security = undefined
@@ -65,15 +66,15 @@ class SwagCli {
     )
   }
 
-  _requestInterceptor (request) {
-    console.log('>>> SwagCli > _requestInterceptor > request :', request)
-    if (request.loadSpec) {
-      console.log('>>> SwagCli > _requestInterceptor > request.loadSpec :', request.loadSpec)
-    }
-    return request
-  }
+  // _requestInterceptor (request) {
+  //   console.log('>>> SwagCli > _requestInterceptor > request :', request)
+  //   if (request.loadSpec) {
+  //     console.log('>>> SwagCli > _requestInterceptor > request.loadSpec :', request.loadSpec)
+  //   }
+  //   return request
+  // }
 
-  _request (operationId, params) {
+  _request (operationId, { params, body, needAuth }) {
     // main request function
     // arg :: pathTagList : array|string of tags corresponding to your endpoint's path
     // arg :: operationId : string / endpoint's opeation ID
@@ -83,7 +84,9 @@ class SwagCli {
         console.log('- '.repeat(20))
         // get endpoint by resolving endpoint's path in client.apis
         console.log('>>> SwagCli > _request >> client : ', client)
-        console.log('>>> SwagCli > _request >> operationId : ', client)
+        console.log('>>> SwagCli > _request >> operationId : ', operationId)
+        console.log('>>> SwagCli > _request >> params : ', params)
+        console.log('>>> SwagCli > _request >> body : ', body)
 
         if (this.security && this.apiKey) {
           console.log('>>> SwagCli > _request >> this.security : ', this.security)
@@ -94,14 +97,33 @@ class SwagCli {
         // const endpoint = resolvePath(pathTagList, client.apis, this.tagsSeparator)
         // return endpoint(params)
 
-        const _requestInterceptor = this._requestInterceptor
-        const endpoint = client.execute({
+        // const _requestInterceptor = this._requestInterceptor
+        const authHeader = this.specAndAuth.authorization
+        // const allowOriginHeader = { 'Access-Control-Allow-Origin': '*' }
+        const request = {
           operationId: operationId,
           parameters: params,
-          _requestInterceptor
-        })
+          body: body,
+          // _requestInterceptor
+          requestInterceptor: req => {
+            req.headers = needAuth ? { ...req.headers, ...authHeader } : req.headers
+            console.log('>>> SwagCli > _request > requestInterceptor >> req : ', req)
+            return req
+          }
+        }
+        const endpoint = client.execute(request)
         console.log('>>> SwagCli > _request >> endpoint : ', endpoint)
         return endpoint
+
+        // const request = SwaggerClient.buildRequest({
+        //   spec: this.swaggerUrl,
+        //   operationId: operationId,
+        //   parameters: params,
+        //   body: body,
+        //   securities: { ApiKey: { value: this.apiKey } },
+        //   responseContentType: 'application/json'
+        // })
+        // return SwaggerClient.http(request)
       },
       reason => console.error('>>> SwagCli > _request >> failed to load the spec: ' + reason)
     )
