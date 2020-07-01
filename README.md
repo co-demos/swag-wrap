@@ -22,6 +22,8 @@ npm install @julpy/swag-wrap@0.0.1-beta.15
 #### in your vue app's `.env` file
 ```env
 VUE_APP_SWAGGER_URL=https://www.data.gouv.fr/api/1/swagger.json
+VUE_APP_API_KEY=my-precious-api-personal-key
+VUE_APP_API_KEY_LOCATION=headers.auth
 ```
 
 #### in your vue app's `main.js` file
@@ -30,11 +32,14 @@ import APIcli from '@julpy/swag-wrap'
 
 ...
 
-const options = {
+const swagWrapOptions = {
   // get back your swagger json url and other options here
   swaggerUrl: process.env.VUE_APP_SWAGGER_URL,
-  separator: '.' // optionnal
+  apiKey: process.env.VUE_APP_API_KEY,
+  apiKeyLocation: process.env.VUE_APP_API_KEY_LOCATION,
+  separator: '.'
 }
+
 // inject your API client plugin into your vue app
 Vue.use(APIcli, options)
 
