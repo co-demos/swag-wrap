@@ -13,8 +13,8 @@ Simple swagger.json wrapper for Vue
 
 ## beta version
 
-- **0.0.1-beta.16** : adding security / auth interceptors
-- **0.0.1-beta.13** to **0.0.1-beta.15** : 
+- **0.0.1-beta.15** : adding security parameters in constructor  / first request interceptors
+- **0.0.1-beta.13** to **0.0.1-beta.14** : 
   - changes in the documentation (README, CHANGELOG, comments)
   - uninstalling `axios` and `swagger-parser` dependencies
 - **0.0.1-beta.12** : pivot with usinng `swagger-client` package and abstract the way it could be used in Vue as a simple plugin

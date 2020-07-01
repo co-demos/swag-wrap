@@ -56,10 +56,10 @@ class SwagCli {
 
   _setSecurity () {
     // cf : https://github.com/swagger-api/swagger-js/blob/HEAD/docs/usage/http-client.md
-    console.log('>>> SwagCli > _setSecurity ...')
+    // console.log('>>> SwagCli > _setSecurity ...')
     return this.cli.then(
       client => {
-        console.log('>>> SwagCli > _setSecurity >> client.spec.securityDefinitions : ', client.spec.securityDefinitions)
+        // console.log('>>> SwagCli > _setSecurity >> client.spec.securityDefinitions : ', client.spec.securityDefinitions)
         this.security = client.spec.securityDefinitions
       }
     )
@@ -73,15 +73,17 @@ class SwagCli {
     return request
   }
 
-  _request (pathTagList, params) {
+  _request (operationId, params) {
     // main request function
     // arg :: pathTagList : array|string of tags corresponding to your endpoint's path
-    // note : the order is important
+    // arg :: operationId : string / endpoint's opeation ID
     return this.cli.then(
       // once client is ready trigger the api's path
       client => {
+        console.log('- '.repeat(20))
         // get endpoint by resolving endpoint's path in client.apis
         console.log('>>> SwagCli > _request >> client : ', client)
+        console.log('>>> SwagCli > _request >> operationId : ', client)
 
         if (this.security && this.apiKey) {
           console.log('>>> SwagCli > _request >> this.security : ', this.security)
@@ -90,16 +92,15 @@ class SwagCli {
 
         // build endpoint
         // const endpoint = resolvePath(pathTagList, client.apis, this.tagsSeparator)
+        // return endpoint(params)
 
         const _requestInterceptor = this._requestInterceptor
         const endpoint = client.execute({
-          operationId: pathTagList,
+          operationId: operationId,
           parameters: params,
           _requestInterceptor
         })
-
         console.log('>>> SwagCli > _request >> endpoint : ', endpoint)
-        // return endpoint(params)
         return endpoint
       },
       reason => console.error('>>> SwagCli > _request >> failed to load the spec: ' + reason)
