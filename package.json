@@ -1,8 +1,8 @@
 {
   "name": "@julpy/swag-wrap",
-  "version": "0.0.1-beta.12",
+  "version": "0.0.1-beta.13",
   "author": "julpy",
-  "description": "Axios wrapper around a swagger json",
+  "description": "Swagger-client wrapper for Vue",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -14,13 +14,12 @@
     "npm",
     "package",
     "swagger",
-    "axios",
+    "vue",
+    "plugin",
     "openAPI"
   ],
   "dependencies": {
-    "axios": "^0.19.2",
-    "swagger-client": "^3.10.9",
-    "swagger-parser": "^9.0.1"
+    "swagger-client": "^3.10.9"
   },
   "devDependencies": {
     "standard": "^14.3.4"
