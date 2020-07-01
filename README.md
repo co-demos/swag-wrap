@@ -10,6 +10,10 @@ Simple swagger.json wrapper for Vue, to be used as a Vue plugin as simply as pos
 
 ```terminal
 npm install @julpy/swag-wrap
+
+... or for beta versions
+
+npm install @julpy/swag-wrap@0.0.1-beta.15
 ```
 
 -------
@@ -29,7 +33,7 @@ import APIcli from '@julpy/swag-wrap'
 const options = {
   // get back your swagger json url and other options here
   swaggerUrl: process.env.VUE_APP_SWAGGER_URL,
-  tagsSeparator: '.' // optionnal
+  separator: '.' // optionnal
 }
 // inject your API client plugin into your vue app
 Vue.use(APIcli, options)
