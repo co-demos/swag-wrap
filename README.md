@@ -29,7 +29,8 @@ import APIcli from '@julpy/swag-wrap'
 
 const options = {
   // get back your swagger json url and other options here
-  swaggerUrl: process.env.VUE_APP_SWAGGER_URL
+  swaggerUrl: process.env.VUE_APP_SWAGGER_URL,
+  tagsSeparator: '.' // optionnal
 }
 // inject your API client plugin into your vue app
 Vue.use(APIcli, options)
@@ -60,6 +61,13 @@ Vue.use(APIcli, options)
 export default {
   data () {
     return {
+      // define the path of your endpoint(s)
+      // both ways (paths as array or string) works
+      // this part is relative to your swagger specs
+      // note the order is important
+      endpointPathArray: ['datasets', 'list_datasets'],
+      endpointPathString: 'datasets.list_datasets',
+
       // the data you want to load and then display
       datasets: undefined
     }
@@ -68,16 +76,24 @@ export default {
     // get your swag-wrap client instance
     const API = this.$APIcli
 
-    // define the path of your endpoint
-    // this part is relative to your swagger specs.
-    // note the order is important
-    const pathTags = ['datasets', 'list_datasets']
-
-    // request data from this path
-    API._request(pathTags).then(
+    // request data from the desired path
+    API._request(this.endpointPathString).then(
       results => {
-        // do something with the result
+        // ... do something with the result
         this.datasets = results.body
+
+        /*
+        you can access the following keys in the `results` response : 
+        - `body` : object
+        - `data` : string | json
+        - `headers` : object
+        - `obj` : object
+        - `ok` : bool
+        - `status` : int
+        - `statusText` : 
+        - `text` : string | json
+        - `url` : string
+        */
       },
       reason => console.error('failed on api call: ' + reason)
     )
