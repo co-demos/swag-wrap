@@ -1,14 +1,7 @@
 import SwaggerClient from 'swagger-client'
 
-// const resolvePath = (path, obj = self, separator = '.') => {
-//   const properties = Array.isArray(path) ? path : path.split(separator)
-//   return properties.reduce((prev, curr) => prev && prev[curr], obj)
-// }
-
 class SwagCli {
   constructor (options) {
-    // this.options = options
-
     // retrieve spec from options
     this.spec = options.swaggerUrl
     console.log('>>> SwagCli > init > this.spec : ', this.spec)
@@ -63,11 +56,8 @@ class SwagCli {
   }
 
   _requestInterceptor (req, needAuth) {
-    console.log('>>> SwagCli > _requestInterceptor > req :', req)
-    // if (req.loadSpec) {
-    //   console.log('>>> SwagCli > _requestInterceptor > req.loadSpec :', req.loadSpec)
-    // }
     const authHeader = this.specAndAuth.authorization
+    // const allowOriginHeader = { 'Access-Control-Allow-Origin': '*' }
     req.headers = needAuth ? { ...req.headers, ...authHeader } : req.headers
     console.log('>>> SwagCli > requestInterceptor >> req : ', req)
     return req
@@ -87,27 +77,20 @@ class SwagCli {
         console.log('>>> SwagCli > _request >> params : ', params)
         console.log('>>> SwagCli > _request >> body : ', body)
 
-        // if (this.security && this.apiKey) {
-        //   console.log('>>> SwagCli > _request >> this.security : ', this.security)
-        //   console.log('>>> SwagCli > _request >> this.apiKey : ', this.apiKey)
-        // }
-
-        // build endpoint
-        // const endpoint = resolvePath(pathTagList, client.apis, this.tagsSeparator)
-        // return endpoint(params)
-
-        // const allowOriginHeader = { 'Access-Control-Allow-Origin': '*' }
+        // build request
         const request = {
           operationId: operationId,
           parameters: params,
           body: body,
           requestInterceptor: req => this._requestInterceptor(req, needAuth)
         }
+
+        // execute request
         const endpoint = client.execute(request)
         console.log('>>> SwagCli > _request >> endpoint (Promise): ', endpoint)
         return endpoint
       },
-      reason => console.error('>>> SwagCli > _request >> failed to load the spec: ' + reason)
+      reason => console.error('>>> SwagCli > _request >> failed to execute the request : ' + reason)
     )
   }
 }
