@@ -65,8 +65,7 @@ class SwagCli {
 
   _request (operationId, { params, body, needAuth }) {
     // main request function
-    // arg :: pathTagList : array|string of tags corresponding to your endpoint's path
-    // arg :: operationId : string / endpoint's opeation ID
+    // arg :: operationId : string / endpoint's operation ID
     return this.cli.then(
       // once client is ready trigger the api's path
       client => {
