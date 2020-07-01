@@ -3,10 +3,9 @@
 
 [![GitHub license](https://img.shields.io/github/license/co-demos/swag-wrap)](https://github.com/co-demos/swag-wrap/blob/master/LICENSE) [![npm (scoped)](https://img.shields.io/npm/v/@julpy/swag-wrap.svg)](https://www.npmjs.com/package/@julpy/swag-wrap) [![npm bundle size (minified)](https://img.shields.io/bundlephobia/min/@julpy/swag-wrap.svg)](https://www.npmjs.com/package/@julpy/swag-wrap)
 
-Simple swagger.json wrapper for Vue
+Simple swagger.json wrapper for Vue, to be used as a Vue plugin as simply as posible...
 
 ---------
-
 ## Install
 
 ```terminal
@@ -101,3 +100,8 @@ export default {
 }
 </script>
 ```
+
+--------
+## Main dependencie(s)
+
+- `swagger-client` : [github](https://github.com/swagger-api/swagger-js) - [documentation](https://github.com/swagger-api/swagger-js#readme) - [npm](https://www.npmjs.com/package/swagger-client)
