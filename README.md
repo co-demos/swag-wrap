@@ -6,6 +6,7 @@
 Simple swagger.json wrapper for Vue, to be used as a Vue plugin as simply as posible...
 
 ---------
+
 ## Install
 
 ```terminal
@@ -13,25 +14,29 @@ npm install @julpy/swag-wrap
 
 ... or for beta versions
 
-npm install @julpy/swag-wrap@0.0.1-beta.15
+npm install @julpy/swag-wrap@0.0.1-beta.17
 ```
 
---------
+---------
+
 ## Main dependencie(s)
 
 - `swagger-client` : [github](https://github.com/swagger-api/swagger-js) - [documentation](https://github.com/swagger-api/swagger-js#readme) - [npm](https://www.npmjs.com/package/swagger-client)
 
 
--------
+---------
+
 ## Usage as vue plugin
 
-#### in your vue app's `.env` file
+### in your vue app's `.env` file
+
 ```env
 VUE_APP_SWAGGER_URL=https://www.data.gouv.fr/api/1/swagger.json
 VUE_APP_API_KEY=my-precious-api-personal-key
 ```
 
-#### in your vue app's `main.js` file
+### in your vue app's `main.js` file
+
 ```js
 import APIcli from '@julpy/swag-wrap'
 
@@ -50,7 +55,7 @@ Vue.use(APIcli, options)
 
 ```
 
-#### in any of your vue app's components
+### in any of your vue app's components
 
 ```vue
 <template>
@@ -96,14 +101,14 @@ export default {
         this.datasets = results.body
 
         /*
-        you can access the following keys in the `results` response : 
+        you can access the following keys in the `results` response :
         - `body` : object
         - `data` : string | json
         - `headers` : object
         - `obj` : object
         - `ok` : bool
         - `status` : int
-        - `statusText` : 
+        - `statusText` :
         - `text` : string | json
         - `url` : string
         */
@@ -112,7 +117,7 @@ export default {
     )
 
     // - - - - - - - - - - - - - - - - - //
-    //// GET endpoint with parameters
+    // GET endpoint with parameters
     // - - - - - - - - - - - - - - - - - //
     // prepare parameters for this endpoint
     const parameters = {
@@ -128,7 +133,7 @@ export default {
     )
 
     // - - - - - - - - - - - - - - - - - //
-    //// PUT endpoint with parameters
+    // PUT endpoint with parameters
     // - - - - - - - - - - - - - - - - - //
     // prepare parameters for this endpoint
     const parameters = {
@@ -155,8 +160,8 @@ export default {
 </script>
 ```
 
+---------
 
--------
 ## Usage as plugin
 
 ```js

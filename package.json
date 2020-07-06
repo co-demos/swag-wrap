@@ -1,6 +1,6 @@
 {
   "name": "@julpy/swag-wrap",
-  "version": "0.0.1-beta.16",
+  "version": "0.0.1-beta.17",
   "author": "julpy",
   "description": "Swagger-client wrapper for Vue",
   "license": "MIT",
