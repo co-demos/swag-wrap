@@ -1,50 +1,55 @@
 import SwaggerClient from 'swagger-client'
 
 class SwagCli {
-  constructor (options) {
+  constructor (options, store) {
+    this.store = store
     // retrieve spec from options
     this.spec = options.swaggerUrl
     console.log('>>> SwagCli > init > this.spec : ', this.spec)
 
-    // retrieve API key options
-    this.apiKey = options.apiKey
-    this.bearerAuth = options.bearerAuth
-    this.userName = options.userName
-    this.userPassword = options.userPassword
-    this.token = options.token
-    this.customAuthHeader = options.customAuthHeader
-
-    // create swagger client from spec
-    this.specAndAuth = { url: this.spec }
-
-    // add auth to spec if necessary
-    if (this.apiKey) {
-      // this.specAndAuth.authorization = { ApiKey: { value: this.apiKey } }
-      // this.specAndAuth.authorization = { Authorization: { 'X-API-KEY': this.apiKey } }
-      this.specAndAuth.authorization = { 'X-API-KEY': this.apiKey }
-    } else if (this.bearerAuth) {
-      this.specAndAuth.authorization = { BearerAuth: { value: this.bearerAuth } }
-    } else if (this.userPassword) {
-      this.specAndAuth.authorization = { BasicAuth: { username: this.userName, password: this.userPassword } }
-    } else if (this.token) {
-      this.specAndAuth.authorization = { oAuth2: { token: { access_token: this.token } } }
-    } else if (this.customAuthHeader && this.apiKey) {
-      const customHeader = {}
-      customHeader[this.customAuthHeader] = this.apiKey
-      this.specAndAuth.authorization = customHeader
-    }
-
-    // activate CORS or not
-    // if (options.activateCORS) {
-    //   SwaggerClient.http.withCredentials = true
-    // }
-
     // instantiate client
-    this.cli = new SwaggerClient(this.specAndAuth)
+    this.resetCli(options)
 
     // set up security definitions
     // this.security = undefined
     // this._setSecurity()
+  }
+
+  buildSpecAndAuth (options) {
+    // create swagger client from spec
+    const specAndAuth = { url: this.spec }
+
+    // add auth to spec if necessary
+    if (options.apiKey) {
+      // this.specAndAuth.authorization = { ApiKey: { value: this.apiKey } }
+      // this.specAndAuth.authorization = { Authorization: { 'X-API-KEY': this.apiKey } }
+      specAndAuth.authorization = { 'X-API-KEY': options.apiKey }
+    } else if (options.bearerAuth) {
+      specAndAuth.authorization = { BearerAuth: { value: options.bearerAuth } }
+    } else if (options.userPassword) {
+      specAndAuth.authorization = { BasicAuth: { username: options.userName, password: options.userPassword } }
+    } else if (options.token) {
+      specAndAuth.authorization = { oAuth2: { token: { access_token: options.token } } }
+    } else if (options.customAuthHeader && options.apiKey) {
+      const customHeader = {}
+      customHeader[options.customAuthHeader] = options.apiKey
+      specAndAuth.authorization = customHeader
+    }
+    return specAndAuth
+  }
+
+  resetCli (authOptions) {
+    this.specAndAuth = this.buildSpecAndAuth(authOptions)
+    // activate CORS or not
+    // if (authOptions.activateCORS) {
+    //   SwaggerClient.http.withCredentials = true
+    // }
+    this.setStore()
+    this.cli = new SwaggerClient(this.specAndAuth)
+  }
+
+  setStore () {
+    this.store && this.store.commit('swagapi/setSpecs', this.specAndAuth)
   }
 
   // _setSecurity () {
@@ -111,10 +116,32 @@ class SwagCli {
   }
 }
 
+// vue store module within plugin just for auth
+export const moduleApiClient = {
+  namespaced: true,
+  state: () => ({
+    specs: undefined
+  }),
+  getters: {},
+  mutations: {
+    setSpecs (state, specs) {
+      state.specs = specs
+    }
+  },
+  actions: {},
+  modules: {}
+}
+
 const APIcli = {
-  install (Vue, options) {
+  install (Vue, options, store) {
+    // register namespaced store i necessary
+    if (options.registerApiStore && store) {
+      const moduleName = options.storeModuleName ? options.storeModuleName : 'swagwrap'
+      store.registerModule(moduleName, moduleApiClient)
+    }
+
     // declare client as a global prototype in Vue
-    Vue.prototype.$APIcli = new SwagCli(options)
+    Vue.prototype.$APIcli = new SwagCli(options, store)
   }
 }
 export default APIcli

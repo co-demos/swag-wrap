@@ -14,7 +14,7 @@ npm install @julpy/swag-wrap
 
 ... or for beta versions
 
-npm install @julpy/swag-wrap@0.0.1-beta.17
+npm install @julpy/swag-wrap@0.0.1-beta.18
 ```
 
 ---------
