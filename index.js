@@ -1,8 +1,13 @@
+// npm package : swag-wrap
+
 import SwaggerClient from 'swagger-client'
 
 class SwagCli {
   constructor (options, store) {
     this.store = store
+    this.storeModuleName = options.storeModuleName
+    this.store && this.store.commit(`${this.storeModuleName}/setOptions`, options)
+
     // retrieve spec from options
     this.spec = options.swaggerUrl
     console.log('>>> SwagCli > init > this.spec : ', this.spec)
@@ -20,36 +25,59 @@ class SwagCli {
     const specAndAuth = { url: this.spec }
 
     // add auth to spec if necessary
+    // TO DO : simplify this part...
     if (options.apiKey) {
-      // this.specAndAuth.authorization = { ApiKey: { value: this.apiKey } }
-      // this.specAndAuth.authorization = { Authorization: { 'X-API-KEY': this.apiKey } }
-      specAndAuth.authorization = { 'X-API-KEY': options.apiKey }
-    } else if (options.bearerAuth) {
-      specAndAuth.authorization = { BearerAuth: { value: options.bearerAuth } }
-    } else if (options.userPassword) {
-      specAndAuth.authorization = { BasicAuth: { username: options.userName, password: options.userPassword } }
-    } else if (options.token) {
-      specAndAuth.authorization = { oAuth2: { token: { access_token: options.token } } }
-    } else if (options.customAuthHeader && options.apiKey) {
-      const customHeader = {}
-      customHeader[options.customAuthHeader] = options.apiKey
-      specAndAuth.authorization = customHeader
+      specAndAuth.authorizationHeader = {
+        'X-API-KEY': options.apiKey
+      }
+      specAndAuth.credentials = 'include'
     }
+    if (options.bearerAuth) {
+      specAndAuth.authorizationHeader = {
+        // Authorization: `Basic ${options.clientId}:${options.clientSecret}`,
+        // Authorization: encodeURIComponent(`Bearer ${options.bearerAuth}`),
+        Authorization: `Bearer ${options.bearerAuth}`
+        // Authorization: `Bearer Token ${options.bearerAuth}`,
+        // Authorization: `Basic ${options.bearerAuth}`,
+        // Authorization: `${options.bearerAuth}`,
+        // Accept: 'application/json',
+        // Accept: '*/*',
+        // 'Content-Type': 'application/json'
+      }
+      specAndAuth.credentials = 'include'
+    }
+    // if (options.userPassword) {
+    //   specAndAuth.authorizationHeader = { BasicAuth: { username: options.userName, password: options.userPassword } }
+    // }
+    // if (options.token) {
+    //   specAndAuth.authorizationHeader = { oAuth2: { token: { access_token: options.token } } }
+    // }
+    // if (options.customAuthHeader && options.apiKey) {
+    //   const customHeader = {}
+    //   customHeader[options.customAuthHeader] = options.apiKey
+    //   specAndAuth.authorizationHeader = customHeader
+    // }
+    // if (options.rawHeader) {
+    //   specAndAuth.authorizationHeader = options.rawHeader
+    // }
     return specAndAuth
   }
 
   resetCli (authOptions) {
+    console.log('>>> SwagCli > resetCli > authOptions : ', authOptions)
     this.specAndAuth = this.buildSpecAndAuth(authOptions)
-    // activate CORS or not
+    console.log('>>> SwagCli > resetCli > this.specAndAuth : ', this.specAndAuth)
+    // Activate CORS or not
     // if (authOptions.activateCORS) {
     //   SwaggerClient.http.withCredentials = true
     // }
-    this.setStore()
+    this.setSpecsInStore()
     this.cli = new SwaggerClient(this.specAndAuth)
   }
 
-  setStore () {
-    this.store && this.store.commit('swagapi/setSpecs', this.specAndAuth)
+  setSpecsInStore () {
+    console.log('>>> SwagCli > setSpecsInStore > this.specAndAuth : ', this.specAndAuth)
+    this.store && this.store.commit(`${this.storeModuleName}/setSpecs`, this.specAndAuth)
   }
 
   // _setSecurity () {
@@ -65,21 +93,19 @@ class SwagCli {
 
   _requestInterceptor (req, needAuth) {
     // swagger client request interceptor
-    const authHeader = this.specAndAuth.authorization
+    const authHeader = this.specAndAuth.authorizationHeader
+    console.log('>>> SwagCli > requestInterceptor >> authHeader : ', authHeader)
 
-    // update request's headers
-    req.headers = needAuth ? {
-      ...req.headers,
-      ...authHeader
-    } : req.headers
+    // update request's headers => append authorization header if needAuth == true
+    req.headers = needAuth ? { ...req.headers, ...authHeader } : req.headers
 
     // update request's mode
     // req.mode = needAuth ? 'cors' : 'same-origin'
     // req.mode = 'cors'
 
     // update request's credentials
-    // req.credentials = needAuth ? 'include' : 'same-origin'
-    // req.credentials = 'omit'
+    // req.credentials = needAuth ? 'include' : 'same-origin' // include | same-origin | omit
+    // req.credentials = this.specAndAuth.credentials || 'same-origin'
 
     console.log('>>> SwagCli > requestInterceptor >> req : ', req)
     return req
@@ -105,6 +131,7 @@ class SwagCli {
         }
         request = params ? { ...request, parameters: params } : request
         request = body ? { ...request, body: body } : request
+        console.log('>>> SwagCli > _request >> request : ', request)
 
         // execute request
         const endpoint = client.execute(request)
@@ -120,10 +147,14 @@ class SwagCli {
 export const moduleApiClient = {
   namespaced: true,
   state: () => ({
+    options: undefined,
     specs: undefined
   }),
   getters: {},
   mutations: {
+    setOptions (state, options) {
+      state.options = options
+    },
     setSpecs (state, specs) {
       state.specs = specs
     }
@@ -134,9 +165,11 @@ export const moduleApiClient = {
 
 const APIcli = {
   install (Vue, options, store) {
-    // register namespaced store i necessary
+    // register namespaced store if necessary
+    const moduleName = options.storeModuleName ? options.storeModuleName : 'swagwrap'
+    options.storeModuleName = moduleName
+
     if (options.registerApiStore && store) {
-      const moduleName = options.storeModuleName ? options.storeModuleName : 'swagwrap'
       store.registerModule(moduleName, moduleApiClient)
     }
 

@@ -14,7 +14,7 @@ npm install @julpy/swag-wrap
 
 ... or for beta versions
 
-npm install @julpy/swag-wrap@0.0.1-beta.18
+npm install @julpy/swag-wrap@0.0.1-beta.19
 ```
 
 ---------
@@ -41,6 +41,8 @@ VUE_APP_API_KEY=my-precious-api-personal-key
 import APIcli from '@julpy/swag-wrap'
 
 ...
+
+const isDevMode = Boolean(process.env.VUE_APP_DEV_MODE)
 
 const swagWrapOptions = {
   // get back your swagger json url and other options here
